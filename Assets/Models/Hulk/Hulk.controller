@@ -1,13 +1,13 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1102 &-7392868949701665237
+--- !u!1102 &-1129823586894978475
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mixamo_com
+  m_Name: Throw End
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -26,18 +26,18 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &-1158927585181204917
+--- !u!1102 &-16888858656777590
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mixamo_com
+  m_Name: Throw Start
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 5988208197899437185}
+  - {fileID: 7942834618806067723}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -62,8 +62,8 @@ AnimatorController:
   m_Name: Hulk
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Throw
-    m_Type: 9
+  - m_Name: Throw 0
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -91,11 +91,11 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: -1158927585181204917}
-    m_Position: {x: 350, y: 120, z: 0}
+    m_State: {fileID: -16888858656777590}
+    m_Position: {x: 439.71115, y: 130.11807, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -7392868949701665237}
-    m_Position: {x: 350, y: 260, z: 0}
+    m_State: {fileID: -1129823586894978475}
+    m_Position: {x: 430, y: 210, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -105,8 +105,8 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: -1158927585181204917}
---- !u!1101 &5988208197899437185
+  m_DefaultState: {fileID: -16888858656777590}
+--- !u!1101 &7942834618806067723
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,18 +115,18 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Throw
+    m_ConditionEvent: Throw 0
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: -7392868949701665237}
+  m_DstState: {fileID: -1129823586894978475}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0
   m_TransitionOffset: 0
-  m_ExitTime: 0.7794118
-  m_HasExitTime: 1
+  m_ExitTime: 0.77941185
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1

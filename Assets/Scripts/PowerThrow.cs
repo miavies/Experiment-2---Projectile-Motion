@@ -3,11 +3,16 @@ using UnityEngine.UI;
 
 public class PowerIndicator : MonoBehaviour
 {
-    public RectTransform arrowTransform; // Reference to the UI arrow
-    public float maxScale = 2.0f; // Fixed maximum scale value
-    public float chargeSpeed = 2.0f; // Speed of scaling
+    public RectTransform arrowTransform;
+    public float maxScale = 2.0f;
+    public float chargeSpeed = 2.0f;
+    public float launchForceMultiplier = 10.0f; // Adjust this value for strength
+    public Rigidbody wolverineRb; // Reference to Wolverine's Rigidbody
+    public Transform hulkHand; // Reference to Hulk's hand (parent object)
+
     private Vector2 originalSize;
     private bool isCharging = false;
+    private float power = 0f;
 
     void Start()
     {
@@ -29,23 +34,32 @@ public class PowerIndicator : MonoBehaviour
 
     void HandlePowerCharge()
     {
-        if (Input.GetMouseButton(0)) // Holding left mouse button
+        if (Input.GetMouseButton(0)) // Charging
         {
             isCharging = true;
-            float scaleFactor = Mathf.Min(arrowTransform.sizeDelta.x + chargeSpeed * Time.deltaTime * 100, originalSize.x * maxScale);
-            arrowTransform.sizeDelta = new Vector2(scaleFactor, arrowTransform.sizeDelta.y);
+            power = Mathf.Min(power + chargeSpeed * Time.deltaTime, maxScale);
+            arrowTransform.sizeDelta = new Vector2(originalSize.x * (1 + power), arrowTransform.sizeDelta.y);
         }
-        else if (isCharging)
+        else if (isCharging) // Release to Launch
         {
             isCharging = false;
-            LaunchProjectile();
-            arrowTransform.sizeDelta = originalSize; // Reset size
+            LaunchWolverine();
+            power = 0;
+            arrowTransform.sizeDelta = originalSize;
         }
     }
 
-    void LaunchProjectile()
+    void LaunchWolverine()
     {
-        // Implement Wolverine launch logic here
-        Debug.Log("Wolverine Launched!");
+        if (wolverineRb != null)
+        {
+            wolverineRb.transform.SetParent(null); // Detach from Hulk's hand
+            wolverineRb.isKinematic = false; 
+
+            Vector2 launchDirection = (Input.mousePosition - transform.position).normalized;
+            wolverineRb.linearVelocity = launchDirection * (power * launchForceMultiplier);
+
+            Debug.Log("Wolverine Launched!");
+        }
     }
 }
