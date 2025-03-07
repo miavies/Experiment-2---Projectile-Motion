@@ -1,14 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PowerIndicator : MonoBehaviour
 {
     public RectTransform arrowTransform;
     public float maxScale = 2.0f;
     public float chargeSpeed = 2.0f;
-    public float launchForceMultiplier = 10.0f; // Adjust this value for strength
-    public Rigidbody wolverineRb; // Reference to Wolverine's Rigidbody
-    public Transform hulkHand; // Reference to Hulk's hand (parent object)
+    public float launchForceMultiplier = 10.0f;
+    public Rigidbody wolverineRb;
+    public Transform hulkHand;
+    public Animator hulkAnimator;
+
+    public Camera mainCamera;
+    public Camera wolverineCamera;
+
+    public GameObject uiCanvas; // UI Container (Assign in Inspector)
 
     private Vector2 originalSize;
     private bool isCharging = false;
@@ -17,6 +24,12 @@ public class PowerIndicator : MonoBehaviour
     void Start()
     {
         originalSize = arrowTransform.sizeDelta;
+
+        // Ensure UI starts hidden
+        if (uiCanvas != null) uiCanvas.SetActive(false);
+
+        // Enable UI after 1 second
+        Invoke("EnableUI", 1.5f);
     }
 
     void Update()
@@ -53,13 +66,44 @@ public class PowerIndicator : MonoBehaviour
     {
         if (wolverineRb != null)
         {
-            wolverineRb.transform.SetParent(null); // Detach from Hulk's hand
-            wolverineRb.isKinematic = false; 
+            wolverineRb.transform.SetParent(null);
+            wolverineRb.isKinematic = false;
+            wolverineRb.useGravity = true;
 
             Vector2 launchDirection = (Input.mousePosition - transform.position).normalized;
             wolverineRb.linearVelocity = launchDirection * (power * launchForceMultiplier);
 
-            Debug.Log("Wolverine Launched!");
+            // Switch to Wolverine's Camera
+            SwitchCamera(true);
+
+            // Trigger the Throw animation
+            if (hulkAnimator != null)
+            {
+                hulkAnimator.SetBool("Throw", true);
+            }
+
+            Debug.Log("Wolverine Launched with Camera Switch!");
+
+            // Disable UI after launch
+            if (uiCanvas != null) uiCanvas.SetActive(false);
         }
+    }
+
+    void SwitchCamera(bool toWolverineCamera)
+    {
+        if (mainCamera != null && wolverineCamera != null)
+        {
+            mainCamera.gameObject.SetActive(!toWolverineCamera);
+            wolverineCamera.gameObject.SetActive(toWolverineCamera);
+
+            mainCamera.enabled = !toWolverineCamera;
+            wolverineCamera.enabled = toWolverineCamera;
+        }
+    }
+
+    void EnableUI()
+    {
+        if (uiCanvas != null)
+            uiCanvas.SetActive(true);
     }
 }
