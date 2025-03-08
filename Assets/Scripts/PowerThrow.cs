@@ -1,34 +1,39 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class PowerIndicator : MonoBehaviour
 {
-    public RectTransform arrowTransform;
+    public Image arrowCharge;
     public float maxScale = 2.0f;
     public float chargeSpeed = 2.0f;
     public float launchForceMultiplier = 10.0f;
+    public float angle;
     public Rigidbody wolverineRb;
     public Transform hulkHand;
     public Animator hulkAnimator;
+    public TrailRenderer wolverineTrail;
 
     public Camera mainCamera;
     public Camera wolverineCamera;
+    public Camera valuesCamera;
 
     public GameObject uiCanvas; // UI Container (Assign in Inspector)
 
-    private Vector2 originalSize;
     private bool isCharging = false;
-    private float power = 0f;
+    public float power = 0f;
+
+    public TextMeshProUGUI angleText;
 
     void Start()
     {
-        originalSize = arrowTransform.sizeDelta;
+        arrowCharge.fillAmount = 0;
+        wolverineTrail.enabled = false;
 
-        // Ensure UI starts hidden
-        if (uiCanvas != null) uiCanvas.SetActive(false);
+        if (uiCanvas != null)
+            uiCanvas.SetActive(false);
 
-        // Enable UI after 1 second
         Invoke("EnableUI", 1.5f);
     }
 
@@ -41,8 +46,9 @@ public class PowerIndicator : MonoBehaviour
     void RotateIndicator()
     {
         Vector2 direction = (Input.mousePosition - transform.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
+        angleText.text = angle.ToString("F1") + "°";
     }
 
     void HandlePowerCharge()
@@ -51,14 +57,14 @@ public class PowerIndicator : MonoBehaviour
         {
             isCharging = true;
             power = Mathf.Min(power + chargeSpeed * Time.deltaTime, maxScale);
-            arrowTransform.sizeDelta = new Vector2(originalSize.x * (1 + power), arrowTransform.sizeDelta.y);
+            arrowCharge.fillAmount = power / maxScale;
         }
         else if (isCharging) // Release to Launch
         {
             isCharging = false;
             LaunchWolverine();
             power = 0;
-            arrowTransform.sizeDelta = originalSize;
+            arrowCharge.fillAmount = 0;
         }
     }
 
@@ -73,32 +79,35 @@ public class PowerIndicator : MonoBehaviour
             Vector2 launchDirection = (Input.mousePosition - transform.position).normalized;
             wolverineRb.linearVelocity = launchDirection * (power * launchForceMultiplier);
 
-            // Switch to Wolverine's Camera
-            SwitchCamera(true);
+            SwitchCamera(wolverineCamera);
 
-            // Trigger the Throw animation
             if (hulkAnimator != null)
             {
                 hulkAnimator.SetBool("Throw", true);
             }
 
+            wolverineTrail.enabled = true;
+
             Debug.Log("Wolverine Launched with Camera Switch!");
 
-            // Disable UI after launch
-            if (uiCanvas != null) uiCanvas.SetActive(false);
+            if (uiCanvas != null)
+                uiCanvas.SetActive(false);
+
+            // Switch to Values Camera after 10 seconds
+            Invoke("SwitchToValuesCamera", 10f);
         }
     }
-
-    void SwitchCamera(bool toWolverineCamera)
+   
+    void SwitchCamera(Camera activeCamera)
     {
-        if (mainCamera != null && wolverineCamera != null)
-        {
-            mainCamera.gameObject.SetActive(!toWolverineCamera);
-            wolverineCamera.gameObject.SetActive(toWolverineCamera);
+        mainCamera.gameObject.SetActive(activeCamera == mainCamera);
+        wolverineCamera.gameObject.SetActive(activeCamera == wolverineCamera);
+        valuesCamera.gameObject.SetActive(activeCamera == valuesCamera);
+    }
 
-            mainCamera.enabled = !toWolverineCamera;
-            wolverineCamera.enabled = toWolverineCamera;
-        }
+    void SwitchToValuesCamera()
+    {
+        SwitchCamera(valuesCamera);
     }
 
     void EnableUI()
@@ -106,4 +115,5 @@ public class PowerIndicator : MonoBehaviour
         if (uiCanvas != null)
             uiCanvas.SetActive(true);
     }
+
 }
