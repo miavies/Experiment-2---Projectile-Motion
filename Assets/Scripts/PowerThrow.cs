@@ -26,6 +26,10 @@ public class PowerIndicator : MonoBehaviour
 
     public TextMeshProUGUI angleText;
 
+    public AudioSource audioSource;
+    public AudioClip launchSound;
+
+
     void Start()
     {
         arrowCharge.fillAmount = 0;
@@ -88,6 +92,17 @@ public class PowerIndicator : MonoBehaviour
 
             wolverineTrail.enabled = true;
 
+            // ✅ Play launch sound
+            if (audioSource != null && launchSound != null)
+            {
+                audioSource.PlayOneShot(launchSound);
+                Debug.Log("Wolverine Launch Sound Played!");
+            }
+            else
+            {
+                Debug.LogError("Missing AudioSource or LaunchSound!");
+            }
+
             Debug.Log("Wolverine Launched with Camera Switch!");
 
             if (uiCanvas != null)
@@ -97,7 +112,8 @@ public class PowerIndicator : MonoBehaviour
             Invoke("SwitchToValuesCamera", 10f);
         }
     }
-   
+
+
     void SwitchCamera(Camera activeCamera)
     {
         mainCamera.gameObject.SetActive(activeCamera == mainCamera);
