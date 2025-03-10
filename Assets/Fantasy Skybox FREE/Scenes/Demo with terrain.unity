@@ -788,7 +788,7 @@ MonoBehaviour:
   helaTag: Hela
   Killfeed: {fileID: 36443640}
   audioSource: {fileID: 496094776}
-  launchSound: {fileID: 8300000, guid: 35b66271bdc0161439a6257f5e8eff28, type: 3}
+  launchSound: {fileID: 8300000, guid: 06648f3929d56b44db115562c2d0ed8d, type: 3}
   hitSound: {fileID: 8300000, guid: 68af0391f482f644eb18a7c1fd237861, type: 3}
   hitOrMiss: 
 --- !u!1 &279729170
